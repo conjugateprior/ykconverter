@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta name="AppleTitle" content="YKConverter Help"/>
+<title>YKConverter Help</title> 
+<style type="text/css">
+/*<![CDATA[*/
+body {margin-left: 2em;
+      margin-right:2em;
+      font-size: 9pt;
+      font-family: "Lucida Grande", Arial, sans-serif}
+p {margin-left: 2em}
+p.validity {text-align: right}
+p.indent {margin-left: 5%}
+h4 {margin-left: 2em}
+/*]]>*/
+</style>
+</head>
+<body>
+
+<h2>YKConverter</h2>
+
+<p>The YKConverter is an application for converting PDF, HTML, Microsoft Word, Excel, 
+and Powerpoint 
+documents into UTF-8 encoded plain text.  It will also convert text documents 
+from your platform's native encoding into UTF-8 if you give it a hint.</p>
+
+<h3>How do I convert a document?</h3>
+
+<p>Simply some documents directly from your desktop onto
+the main window to start the conversion process.  Alternatively you can select File&gt;Open
+from the menu to find them using a file dialog.  Conversion
+can take a few moments, depending on the size of the file and its format.
+</p>
+
+<p>After your documents are converted, their texts appear as tabs in
+the application window.  You can edit each text in place if
+necessary.
+</p>
+
+<h3>How do I save what I converted?</h3>
+
+<p>When you're done converting documents you can save them, either one at a time 
+or altogether.  Press the button marked with an old-style disk to save the document whose text
+is currently showing in the window.  To save all your converted documents, 
+select File&gt;Save All from the File menu.
+</p>
+<p> The converter saves the text from each converted file to a new
+file, encoded as UTF-8 (a good Unicode encoding.)  The name of the
+saved file is always the same as the original file, except that the
+suffix of the original file e.g. <tt>.pdf</tt> is replaced by <tt>.txt</tt> to
+indicate that it is text.</p>
+
+<h3>Where are my converted files?</h3>
+
+<p>Your converted texts are either all saved to a single folder of your choice 
+or next to the original file.  This is determined by the application Preferences 
+(File&gt;Preferences on Windows and Linux).</p>
+
+<h3>How do I get rid of conversions I don't want?</h3>
+<p>
+To discard failed or unwanted text conversions press the
+ button marked with a cross, or select File&gt;Discard from the File menu.
+Discarding a conversion never affects the original file.
+</p>
+
+<h3>I only want a small section of my file</h3>
+
+<p>
+If you need a contiguous section from a converted file, e.g. the central
+sections of a web page but not surrounding advertisements, then select the
+part you want and press the final button on the tool bar marked with a text
+selection icon.  This button performs the <i>opposite</i> of the usual 'Cut' function:
+It removes all text except your selection.  
+</p>
+
+<h3>Conversion failed!</h3>
+
+<p>Sometimes the conversion process fails.  This may happen if a PDF document is encrypted,
+if the libraries used by the application cannot cope with a particular version of your 
+file format, or simply because of a bug.</p>
+
+<h4>Limitations</h4>
+<p>Most of the actual conversion work is performed by third-party libraries:  
+Microsoft Word, Excel, Powerpoint, and PDF files are converted using code from
+ the excellent Apache <a href="http://poi.apache.org">POI</a> and
+  <a href="http://pdf.apache.org">PDFBox</a> projects.
+HTML files are converted using the <a href="http://home.ccil.org/~cowan/XML/tagsoup/">TagSoup</a>
+library.  
+I cannot solve technical problems with these, although I may be able to suggest alternatives.
+</p>
+
+<h3>Conversion isn't very good</h3>
+<p>Sometimes the converters don't do a good job.  In general, formatting will
+always be lost.  The application does its best to correct 
+frequently word-level errors, e.g. trying to rejoin words hyphenated over line breaks in PDF
+ files, but there is a limit to the amount of post-processing that is possible to automate.</p>
+
+<h4>PDF-specific problems</h4>
+<p>
+Some PDF files are in fact only pictures of documents, eg. documents created by scanning.  
+If you are lucky
+ the scanner used optical character recognition (OCR) to figure out what the text was and 
+ embedded it in the PDF file.  
+ </p>
+<p>If embedded OCR text is available then the YKConverter should 
+find it.  However, sometimes errors in the OCR process lead to partial or incorrect embedded text.  
+This will make it appear as if the conversion process has partially failed.  
+ A good way to determine whether it is the 
+ original OCR or the conversion process that is at fault is to use Acrobat Reader's 'save as text'
+ function.  If this shows the same errors, it is an OCR problem.
+ </p>
+ <p>
+ Some PDF files are password protected.  These cannot be converted at the moment, even if you
+ know the password.
+</p> 
+
+<h3>I've found a bug!</h3>
+<p>
+Please report any bugs you find in the application itself to me at wlowe [at] gov.harvard.edu
+</p>
+ 
+</body>
+</html>

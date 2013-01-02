@@ -1,0 +1,159 @@
+<?xml version="1.0"?>
+<project name="ykconverter" default="jar" basedir=".">
+
+	<property file="build.properties" />
+
+	<!-- need to have this in /Developer/Java/Ant/lib or wherever -->
+	<taskdef name="jarbundler" 
+	         classname="net.sourceforge.jarbundler.JarBundler"
+	         classpath="${jarbundler.dir}/jarbundler-2.2.0.jar"/>
+
+	<taskdef name="launch4j"
+	         classname="net.sf.launch4j.ant.Launch4jTask"
+	         classpath="${launch4j.dir}/launch4j.jar:${launch4j.dir}/lib/xstream.jar"
+	/>
+
+
+	<!-- Set up properties containing important project directories -->
+	<property name="source.root" value="src/java"/>
+	<property name="class.root" value="classes"/>
+	<property name="docs.root" value="javadocs"/>
+	<property name="lib.root" value="lib"/>
+	<property name="resource.root" value="resources"/>
+	<property name="build.root" value="build"/>
+
+	<path id="project.class.path">
+		<pathelement location="${class.root}" />
+		<fileset dir="${lib.root}" includes="*.jar" />
+	</path>
+
+	<target name="clean" description="Remove class files and targets">
+		<delete file="${app.name}-${build.version}.dmg"/>
+		<delete file="${app.name}-${build.version}.exe"/>
+		<delete dir="${docs.root}"/>
+		<delete file="${app.name}-${build.version}-javadocs.zip"/>
+		<delete dir="${class.root}"/>
+		<delete dir="${build.root}"/>
+		<delete file="${app.name}-${build.version}.jar" />
+		<delete dir="${app.name}.app" />
+		<delete file="${resource.root}/application.properties" />
+	</target>
+
+	<target name="compile" depends="prepare" description="Compiles all Java classes">
+		<mkdir dir="${class.root}"/>
+		<javac srcdir="${source.root}"
+	   destdir="${class.root}"
+	   deprecation="on"
+	   source="1.6"
+           target="1.6"
+	   classpathref="project.class.path"/>
+	</target>
+
+	<target name="docs">
+		<delete dir="${docs.root}"/>
+		<mkdir dir="${docs.root}"/>
+		<javadoc sourcepath="${source.root}"
+	     destdir="${docs.root}"
+	     classpathref="project.class.path">
+			<fileset dir="${source.root}" 
+	       includes="**/*.java" />
+		</javadoc>
+		<zip destfile="${app.name}-${build.version}-javadocs.zip">
+			<fileset dir="." includes="${docs.root}/**"/>
+		</zip>
+	</target>
+
+	<target name="prepare" description="Sets up application info in resources">
+		<copy file="templates/application.properties.template" 
+    	      tofile="${resource.root}/application.properties">
+			<filterset>
+				<filter token="APPLICATION_NAME" value="${app.name}"/>
+				<filter token="ICON_PATH" value="converter.png" />
+				<filter token="VERSION" value="${build.version}"/>
+				<filter token="BUILD_NUMBER" value="${build.number}"/>
+			</filterset>
+		</copy>
+	</target>
+
+	<target name="jar" depends="clean,compile">
+		<delete dir="${build.root}" />
+		<mkdir dir="${build.root}" />
+		<unzip dest="${build.root}">
+			<patternset>
+				<include name="**/*" />
+				<exclude name="META-INF/*" />
+			</patternset>
+			<fileset dir="lib" includes="*.jar"/>
+		</unzip>
+		<copy todir="${build.root}">
+			<fileset dir="${class.root}" includes="**" />
+			<fileset dir="${resource.root}" includes="**/*" />
+			<!-- <fileset dir="." includes="onlinehelp/**/*" /> -->
+		</copy>
+
+		<jar destfile="${app.name}-${build.version}.jar"
+	 basedir="${build.root}">
+			<manifest>
+				<attribute name="Main-Class" 
+		   value="${main.class}" />
+			</manifest>
+		</jar>
+	</target>
+
+	<target name="osx" depends="jar">
+		
+		<!-- create application bundle -->
+		<jarbundler name="${app.name}"
+		mainclass="${main.class}" 
+		jar="${app.name}-${build.version}.jar" 
+		dir="." 
+		build="${build.number}"
+		version="${build.version}"
+		bundleid="${main.class}"
+		icon="osx/converter.icns" 
+		jvmversion="1.6+"
+		helpbookfolder="onlinehelp"
+		helpbookname="${app.name} Help">
+			<javaproperty name="apple.laf.useScreenMenuBar" value="true"/>
+			<javafilelist dir="lib" files="libquaqua.jnilib" />
+			<javafilelist dir="lib" files="libquaqua64.jnilib" />
+			<resourcefileset dir="${resource.root}">
+				<include name="onlinehelp/**/*"/>
+			</resourcefileset>
+		</jarbundler>
+	</target>
+
+	<target name="dmg">
+		<exec executable="hdiutil">
+			<arg value="create"/>
+			<arg value="-srcfolder"/>
+			<arg value="${app.name}.app"/>
+			<arg value="${app.name}-${build.version}.dmg"/>
+		</exec>
+	</target>
+
+	<target name="prepare-windows"
+	          description="Fill in the template launch4j config file">
+		<copy file="windows/makeexe.xml.template" 
+	          tofile="makeexe.xml">
+			<filterset>
+				<filter token="VERSION" value="${build.version}"/>
+				<filter token="BUILD_NUMBER" value="${build.number}"/>
+				<filter token="APP_NAME" value="${app.name}"/>
+				<filter token="JAR_NAME" value="${app.name}-${build.version}.jar"/>
+			</filterset>
+		</copy>
+	</target>
+
+	<target name="windows"
+	        depends="prepare-windows"
+	        description="Run launch4j on the config file"
+	>
+		<launch4j configFile="makeexe.xml"
+		          fileVersion="${build.version}"
+		          txtFileVersion="${build.version}"
+		          productVersion="${build.version}"
+		/>
+	</target>
+
+</project>

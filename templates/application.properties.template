@@ -1,0 +1,5 @@
+application.name=@APPLICATION_NAME@
+version=@VERSION@
+icon.path=@ICON_PATH@
+build.number=@BUILD_NUMBER@
+application.copyright=Will Lowe 2010, Gnu Public License
